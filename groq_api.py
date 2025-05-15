@@ -5,24 +5,24 @@ class GroqAPI:
     """
     A class to interact with Groq's API for fast language model inference.
     """
-    
+
     def __init__(self):
-        # Default API key - will be replaced with the provided one
-        self.api_key = "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"
+        # Default API key - should be provided by the user
+        self.api_key = ""  # User needs to provide their own API key
         # API URL
         self.api_url = "https://api.groq.com/openai/v1/chat/completions"
         # Default model
         self.model = "meta-llama/llama-4-scout-17b-16e-instruct"
-        
+
     def set_api_key(self, api_key):
         """Set the Groq API key"""
         if api_key and api_key.strip():
             self.api_key = api_key
-        
+
     def set_model(self, model):
         """Set the model to use for inference"""
         self.model = model
-        
+
     def generate_response(self, prompt):
         """Generate a response using the Groq API"""
         try:
@@ -30,22 +30,22 @@ class GroqAPI:
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.api_key}"
             }
-            
+
             data = {
                 "model": self.model,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.7,
                 "max_tokens": 800
             }
-            
+
             response = requests.post(self.api_url, headers=headers, json=data)
-            
+
             if response.status_code == 200:
                 result = response.json()
                 return result["choices"][0]["message"]["content"].strip()
             else:
                 return f"Error: API returned status code {response.status_code}. {response.text}"
-                
+
         except Exception as e:
             return f"Error with Groq API: {str(e)}"
 
